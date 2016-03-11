@@ -27,19 +27,49 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "Rfp", catalog = DEFAULT_CATALOG)
-public class Rfp implements java.io.Serializable, Comparable<Rfp> {
+public class Rfp implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "rfp_id", unique = true, nullable = false)
 	private Integer rfpId;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "client_id", nullable = false)
 	private Client client; // The owner of RFP
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "rfp_status_id", nullable = false)
 	private RfpStatus rfpStatus;
+	
+	@Column(name = "name", nullable = false, length = 200)
 	private String name;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "startdate", nullable = false, length = 19)
 	private Date startdate;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "enddate", nullable = false, length = 19)
 	private Date enddate;
+	
+	@ManyToMany(fetch=FetchType.EAGER)
+	@JoinTable(name = "RfpActors", 
+	    inverseJoinColumns = {@JoinColumn(name = "actor_id", referencedColumnName = "id")}, // RfpActors -> Actor
+		joinColumns = {@JoinColumn(name="rfp_id", referencedColumnName = "rfp_id")} // RfpActors -> Rfp
+	)
 	private Set<Actor> actors = new HashSet<Actor>(0);
+	
+	@ManyToMany(fetch=FetchType.EAGER)
+	@JoinTable(name="RfpRelations",
+		inverseJoinColumns = {@JoinColumn(name = "relation_id", referencedColumnName="relation_id")}, // RfpRelations -> Relation
+		joinColumns = {@JoinColumn(name = "rfp_id", referencedColumnName = "rfp_id")} // RfpRelations -> Rfp
+	)
 	private Set<Relation> relations = new HashSet<Relation>(0);
 
 	public Rfp() {
@@ -55,19 +85,11 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 
 	public Rfp(Client client, RfpStatus rfpStatus, String name, Date startdate, Date enddate, Set<Actor> actors,
 			Set<Relation> relations) {
-		this.client = client;
-		this.rfpStatus = rfpStatus;
-		this.name = name;
-		this.startdate = startdate;
-		this.enddate = enddate;
+		this(client, rfpStatus, name, startdate, enddate);
 		this.actors = actors;
 		this.relations = relations;
 	}
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-
-	@Column(name = "rfp_id", unique = true, nullable = false)
 	public Integer getRfpId() {
 		return this.rfpId;
 	}
@@ -76,8 +98,6 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 		this.rfpId = rfpId;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "client_id", nullable = false)
 	public Client getClient() {
 		return this.client;
 	}
@@ -86,8 +106,6 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 		this.client = client;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "rfp_status_id", nullable = false)
 	public RfpStatus getRfpStatus() {
 		return this.rfpStatus;
 	}
@@ -96,7 +114,6 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 		this.rfpStatus = rfpStatus;
 	}
 
-	@Column(name = "name", nullable = false, length = 200)
 	public String getName() {
 		return this.name;
 	}
@@ -105,8 +122,6 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 		this.name = name;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "startdate", nullable = false, length = 19)
 	public Date getStartdate() {
 		return this.startdate;
 	}
@@ -115,8 +130,6 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 		this.startdate = startdate;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "enddate", nullable = false, length = 19)
 	public Date getEnddate() {
 		return this.enddate;
 	}
@@ -125,10 +138,6 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 		this.enddate = enddate;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name="RfpActors",  
-    joinColumns={@JoinColumn(name="rfp_id", nullable=false, updatable=false)},  
-    inverseJoinColumns={@JoinColumn(name="actor_id", nullable=false, updatable=false)})  
 	public Set<Actor> getActors() {
 		return this.actors;
 	}
@@ -137,10 +146,6 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 		this.actors = actors;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name="RfpRelations",  
-    joinColumns={@JoinColumn(name="rfp_id", nullable=false, updatable=false)},  
-    inverseJoinColumns={@JoinColumn(name="relation_id", nullable=false, updatable=false)})  
 	public Set<Relation> getRelations() {
 		return this.relations;
 	}
@@ -148,47 +153,4 @@ public class Rfp implements java.io.Serializable, Comparable<Rfp> {
 	public void setRelations(Set<Relation> relations) {
 		this.relations = relations;
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((rfpId == null) ? 0 : rfpId.hashCode());
-		result = prime * result + ((rfpStatus == null) ? 0 : rfpStatus.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Rfp other = (Rfp) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (rfpId == null) {
-			if (other.rfpId != null)
-				return false;
-		} else if (!rfpId.equals(other.rfpId))
-			return false;
-		if (rfpStatus == null) {
-			if (other.rfpStatus != null)
-				return false;
-		} else if (!rfpStatus.equals(other.rfpStatus))
-			return false;
-		return true;
-	}
-
-	@Override
-	public int compareTo(Rfp o) {
-		return this.getName().compareTo(o.getName());
-	}
-
 }

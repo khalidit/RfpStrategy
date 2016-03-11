@@ -24,6 +24,9 @@ public class RfpActors implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "rfp_actors_id", unique = true, nullable = false)
 	private Integer rfpActorsId;
 	private Actor actor;
 	private ActorRole actorRole;
@@ -38,10 +41,6 @@ public class RfpActors implements java.io.Serializable {
 		this.rfp = rfp;
 	}
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-
-	@Column(name = "rfp_actors_id", unique = true, nullable = false)
 	public Integer getRfpActorsId() {
 		return this.rfpActorsId;
 	}

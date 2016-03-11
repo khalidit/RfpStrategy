@@ -1,17 +1,15 @@
 package com.teamtrade.rfp.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
-import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -27,41 +25,59 @@ public class Relation implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "relation_id", unique = true, nullable = false)
 	private Integer relationId;
-	private Actor actorByActorTo;
-	private Actor actorByActorFrom;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "actor_from", nullable = false)
+	private Actor actorSource;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "actor_to", nullable = false)
+	private Actor actorTaget;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "relation_quality_id", nullable = false)
 	private RelationQuality relationQuality;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "relation_type_id", nullable = false)
 	private RelationType relationType;
+	
+	@Column(name = "relation_title", length = 200)
 	private String relationTitle;
+	
+	@Column(name = "relation_comment", length = 500)
 	private String relationComment;
-	private Set<RfpRelations> rfpRelations = new HashSet<RfpRelations>(0);
+	
+//	@ManyToMany(mappedBy="relations")
+//	private Set<Rfp> rfps = new HashSet<Rfp>(0);
 
 	public Relation() {
 	}
 
-	public Relation(Actor actorByActorTo, Actor actorByActorFrom, RelationQuality relationQuality,
+	public Relation(Actor actorTarget, Actor actorSource, RelationQuality relationQuality,
 			RelationType relationType) {
-		this.actorByActorTo = actorByActorTo;
-		this.actorByActorFrom = actorByActorFrom;
+		this.actorTaget = actorTarget;
+		this.actorSource = actorSource;
 		this.relationQuality = relationQuality;
 		this.relationType = relationType;
 	}
 
-	public Relation(Actor actorByActorTo, Actor actorByActorFrom, RelationQuality relationQuality,
-			RelationType relationType, String relationTitle, String relationComment, Set<RfpRelations> rfpRelations) {
-		this.actorByActorTo = actorByActorTo;
-		this.actorByActorFrom = actorByActorFrom;
+	public Relation(Actor actorTarget, Actor actorSource, RelationQuality relationQuality,
+			RelationType relationType, String relationTitle, String relationComment) {
+		this.actorTaget = actorTarget;
+		this.actorSource = actorSource;
 		this.relationQuality = relationQuality;
 		this.relationType = relationType;
 		this.relationTitle = relationTitle;
 		this.relationComment = relationComment;
-		this.rfpRelations = rfpRelations;
+//		this.rfps = rfps;
 	}
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-
-	@Column(name = "relation_id", unique = true, nullable = false)
 	public Integer getRelationId() {
 		return this.relationId;
 	}
@@ -70,28 +86,22 @@ public class Relation implements java.io.Serializable {
 		this.relationId = relationId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "actor_to", nullable = false)
-	public Actor getActorByActorTo() {
-		return this.actorByActorTo;
+	public Actor getActorTarget() {
+		return this.actorTaget;
 	}
 
-	public void setActorByActorTo(Actor actorByActorTo) {
-		this.actorByActorTo = actorByActorTo;
+	public void setActorTarget(Actor actorTaget) {
+		this.actorTaget = actorTaget;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "actor_from", nullable = false)
-	public Actor getActorByActorFrom() {
-		return this.actorByActorFrom;
+	public Actor getActorSource() {
+		return this.actorSource;
 	}
 
-	public void setActorByActorFrom(Actor actorByActorFrom) {
-		this.actorByActorFrom = actorByActorFrom;
+	public void setActorSource(Actor actorSource) {
+		this.actorSource = actorSource;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "relation_quality_id", nullable = false)
 	public RelationQuality getRelationQuality() {
 		return this.relationQuality;
 	}
@@ -100,8 +110,6 @@ public class Relation implements java.io.Serializable {
 		this.relationQuality = relationQuality;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "relation_type_id", nullable = false)
 	public RelationType getRelationType() {
 		return this.relationType;
 	}
@@ -110,7 +118,6 @@ public class Relation implements java.io.Serializable {
 		this.relationType = relationType;
 	}
 
-	@Column(name = "relation_title", length = 200)
 	public String getRelationTitle() {
 		return this.relationTitle;
 	}
@@ -119,7 +126,6 @@ public class Relation implements java.io.Serializable {
 		this.relationTitle = relationTitle;
 	}
 
-	@Column(name = "relation_comment", length = 500)
 	public String getRelationComment() {
 		return this.relationComment;
 	}
@@ -127,14 +133,13 @@ public class Relation implements java.io.Serializable {
 	public void setRelationComment(String relationComment) {
 		this.relationComment = relationComment;
 	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relation")
-	public Set<RfpRelations> getRfpRelationses() {
-		return this.rfpRelations;
-	}
-
-	public void setRfpRelationses(Set<RfpRelations> rfpRelations) {
-		this.rfpRelations = rfpRelations;
-	}
+//
+//	public Set<Rfp> getRfps() {
+//		return this.rfps;
+//	}
+//
+//	public void setRfps(Set<Rfp> rfps) {
+//		this.rfps = rfps;
+//	}
 
 }

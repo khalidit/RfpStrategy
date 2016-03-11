@@ -1,8 +1,13 @@
 package com.teamtrade.rfp.dao;
 
+import static com.teamtrade.rfp.constants.Constants.LAST_INSERTED_ID;
+
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
 
@@ -16,8 +21,28 @@ public class ActorDaoImpl extends AbstractDao<Integer, Actor> implements ActorDa
 		return actor;
 	}
 
-	public int saveActor(Actor actor) {
-		return (int) getSession().save(actor);		
+	/**
+	 * return -1 if already exists
+	 */
+	public Object[] saveActor(Actor actor) {
+		Object[] res = new Object[2];
+		Query aQuery = getSession().createQuery("from Actor a where upper(a.name) = :name");
+		aQuery.setParameter("name", actor.getName().toUpperCase());
+		Actor a = (Actor) aQuery.uniqueResult();
+		if(a != null){
+			res[0] = a.getActorId().longValue();
+			res[1] = Boolean.TRUE;
+			return res;
+		}
+		SQLQuery query = getSession().createSQLQuery("INSERT INTO Actor (`name`, `appreciation`, `actor_type`) VALUES (:name, :appreciation, :type)");
+		query.setParameter("name", actor.getName());
+		query.setParameter("appreciation", actor.getAppreciation().getAppreciationId());
+		query.setParameter("type", actor.getActorType().getActorTypeId());
+		query.executeUpdate();	
+		
+		res[0] = ((BigInteger) getSession().createSQLQuery(LAST_INSERTED_ID).uniqueResult()).longValue();
+		res[1] = Boolean.FALSE;
+		return res;
 	}
 	
 	public List<Actor> findAllActors() {

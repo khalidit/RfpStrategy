@@ -11,8 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,8 +27,15 @@ public class Client implements java.io.Serializable, Comparable<Client> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "client_id", unique = true, nullable = false)
 	private Integer clientId;
-	private Company company;
+	
+	@Column(name = "company", unique = true, nullable = false)
+	private String company;
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "client")
 	private Set<Rfp> rfps = new HashSet<Rfp>(0);
 
 	public Client() {
@@ -40,20 +45,15 @@ public class Client implements java.io.Serializable, Comparable<Client> {
 		this.clientId = id;
 	}
 	
-	public Client(Company company) {
+	public Client(String company) {
 		this.company = company;
 	}
 
-	public Client(Company company, Set<Rfp> rfps) {
+	public Client(String company, Set<Rfp> rfps) {
 		this.company = company;
 		this.rfps = rfps;
 	}
 	
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-
-	@Column(name = "client_id", unique = true, nullable = false)
 	public Integer getClientId() {
 		return this.clientId;
 	}
@@ -62,17 +62,14 @@ public class Client implements java.io.Serializable, Comparable<Client> {
 		this.clientId = clientId;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "company", unique = true, nullable = false)
-	public Company getCompany() {
+	public String getCompany() {
 		return this.company;
 	}
 
-	public void setCompany(Company company) {
+	public void setCompany(String company) {
 		this.company = company;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "client")
 	public Set<Rfp> getRfps() {
 		return this.rfps;
 	}
@@ -83,7 +80,6 @@ public class Client implements java.io.Serializable, Comparable<Client> {
 
 	@Override
 	public int compareTo(Client o) {
-		return this.getCompany().compareTo(o.getCompany());
+		return this.company.compareTo(o.company);
 	}
-	
 }

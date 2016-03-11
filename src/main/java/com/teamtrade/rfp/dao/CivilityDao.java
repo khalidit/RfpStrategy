@@ -10,5 +10,8 @@ import com.teamtrade.rfp.model.Civility;
  *
  */
 public interface CivilityDao {
+	
+	public Civility getCivilityByName(String name);
     public Set<Civility> getCivilities();
+	public int save(Civility civ);
 }

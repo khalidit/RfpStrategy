@@ -1,11 +1,9 @@
 package com.teamtrade.rfp.model;
 
 import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
-import static com.teamtrade.rfp.constants.Constants.DISCRIMINATOR_PERSON;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -21,38 +19,51 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Person", catalog = DEFAULT_CATALOG)
 @PrimaryKeyJoinColumn(name = "id")
-@DiscriminatorValue(value=DISCRIMINATOR_PERSON)
 public class Person extends Actor implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name = "civility", nullable = false)
 	private Civility civility;
+	
+	@Column(name = "_function", length = 200)
 	private String _function;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name = "company")
+	private Company company;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name = "department", nullable = false)
 	private Department department;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name = "manager")
 	private Person manager;
-	private String avatar;
+	
+	@Column(name = "avatar", length = 200)
+	private String avatar = "NA";
 
 	public Person() {
 	}
 
-	public Person(Civility civility, Department department, Person person) {
+	public Person(Civility civility, String function, Company company, Department department, Person person) {
 		this.civility = civility;
 		this.department = department;
 		this.manager = person;
+		this._function = function;
+		this.company = company;
 	}
 
-	public Person(Civility civility, Department department, Person manager, String function, String avatar) {
-		this.civility = civility;
-		this.department = department;
-		this.manager = manager;
-		this._function = function;
+	public Person(Civility civility, String function, Company company, Department department, Person manager, String avatar) {
+		this(civility, function, company, department, manager);
 		this.avatar = avatar;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
-	@JoinColumn(name = "civility", nullable = false)
+
 	public Civility getCivility() {
 		return this.civility;
 	}
@@ -61,8 +72,14 @@ public class Person extends Actor implements java.io.Serializable {
 		this.civility = civility;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
-	@JoinColumn(name = "department", nullable = false)
+	public Company getCompany() {
+		return this.company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+	
 	public Department getDepartment() {
 		return this.department;
 	}
@@ -71,17 +88,14 @@ public class Person extends Actor implements java.io.Serializable {
 		this.department = department;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
-	@JoinColumn(name = "manager", nullable = false)
-	public Person getPerson() {
+	public Person getManager() {
 		return this.manager;
 	}
 
-	public void setPerson(Person person) {
+	public void setManager(Person person) {
 		this.manager = person;
 	}
 
-	@Column(name = "_function", length = 200)
 	public String getFunction() {
 		return this._function;
 	}
@@ -90,7 +104,6 @@ public class Person extends Actor implements java.io.Serializable {
 		this._function = function;
 	}
 
-	@Column(name = "avatar", length = 200)
 	public String getAvatar() {
 		return this.avatar;
 	}

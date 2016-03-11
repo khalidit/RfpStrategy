@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -21,10 +21,11 @@
     <link href="<c:url value='/resources/template/bower_components/font-awesome/css/font-awesome.min.css' />" rel="stylesheet" type="text/css">
 	<!-- Vis style -->
 	<link href="<c:url value='/resources/vis/app.css' />" rel="stylesheet"></link>	
-	
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.14.0/vis.min.css" rel="stylesheet" type="text/css">
-	
 	<link href='https://fonts.googleapis.com/css?family=Poiret+One|Josefin+Sans' rel='stylesheet' type='text/css'>
+	
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  	<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,10 +40,10 @@
     var network = null;	    
     var data  = null;
     var seed = 3;
-    var alist = JSON.parse('${actors}');
-    var elist = JSON.parse('${relations}');
+    var actorList = JSON.parse('${actors}');
+    var relationList = JSON.parse('${relations}');
     var rfpId ='${rfpId}';
-
+    
     function destroy() {
        if (network !== null) {
          network.destroy();
@@ -51,29 +52,89 @@
      }
     		
     	    
-    function draw() {
-    	destroy();			
-    	nodes = new vis.DataSet();				
-    	for(var i = 0; i < alist.length; i ++) {
-    		var node = alist[i];
-    		console.log(node);
-    		nodes.add({id:node["id"],label:node["name"],shape:node["type"], color:node["noteteamtrade"]});	
-   		 }						
+    function drawRFP() {
 
-	    edges = new vis.DataSet();     
-	    for(var i = 0; i < elist.length; i ++) {
-	    	var edge = elist[i];
-	    	console.log(edge);			
-	    	console.log(edge["arrows"]);
+    	destroy();			
+    	nodesFA = new vis.DataSet();				
+    	for(var i = 0; i < actorList.length; i ++) {
+    		var node = actorList[i];
+    		var actorType = node["actorType"]["name"];
+    		var label = null;
+    		var title = null;
+    		if(actorType == "Company"){
+    			label = node["name"];
+    			title = '<div class="panel panel-default">';
+    			title += ' <div class="panel-heading">';
+    			title += '    <div class="row">';
+    			title += '        <div class="col-xs-9 text-right">';
+    			title += '        	  <div><img src="'+node['logo']+'" width="80px" height="80px" /></div>';
+    			title += '            <div>';
+    			title += '           		 <ul class="fa-ul">';
+    			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Appreciation : '+node['appreciation']['name']+'</li>';
+    			title += '      			</ul>';
+    			title += '             </div>';
+    			title += '        </div>';
+    			title += '    </div>';
+    			title += ' </div>';
+    			title += '</div>';
+    		}else{
+    			label = node["civility"]["name"]+" "+node["name"];
+    			title = '<div class="panel panel-info">';
+    			title += ' <div class="panel-heading">';
+    			title += '    <div class="row">';
+    			title += '        <div class="col-xs-9 text-left">';
+    			
+    			var avatar = node['avatar'];
+    			if(avatar != "NA"){
+    				title += '<div><img src="'+avatar+'" width="60px" height="60px" class="img-circle" alt="Profil" /></div>';
+    			}
+    			title += '            <div>';
+    			title += '           		 <ul class="fa-ul">';
+    			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Appreciation : '+node['appreciation']['name']+'</li>';
+    			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Function : '+node['_function']+'</li>';
+    			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Company : '+node['company']['name']+'</li>';
+    			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Department : '+node['department']['name']+'</li>';
+    			title += '      			</ul>';
+    			title += '             </div>';
+    			title += '        </div>';
+    			title += '    </div>';
+    			title += ' </div>';
+    			title += '</div>';
+    		}
+    		nodesFA.add({id:node["actorId"], label:label, title: title, group: actorType});	
+   		 }						
+    	edges = new vis.DataSet();     
+	    for(var i = 0; i < relationList.length; i ++) {
+	    	var edge = relationList[i];
 	    	edges.add({id:edge["id"],from:edge["from"],to:edge["to"],label:edge["label"],color:edge["color"], arrows:edge['arrows'],dashes:edge['dashes'],title:edge['title'],length:edge['length'],width:1/*edge['width']*/});	
 	    }
 
-    	data = {nodes: nodes,edges: edges};
+    	data = {nodes: nodesFA,edges: edges};
    		
     	// create a network
      	var container = document.getElementById('mynetwork');
      	var options = {    	
      		layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
+     		groups: {
+               Company: {
+                 shape: 'icon',
+                 icon: {
+                 	face: 'FontAwesome',
+                     code: '\uf1ad',
+                     size: 50,
+                     color: '#f0a30a'
+                 }
+               },
+               Person: {
+                 shape: 'icon',
+                 icon: {
+                   face: 'FontAwesome',
+                   code: '\uf007',
+                   size: 50,
+                   color: '#aa00ff'
+                 }
+               }
+            },
     		interaction: {hover:true},    
       	 	manipulation: {
     	     	addNode: function (data, callback) { 
@@ -140,7 +201,6 @@
       
          network = new vis.Network(container, data, options);
          network.physics.physicsEnabled = true;
-         console.log(data);
      }
     	
     function cancelEdit(callback) {
@@ -157,35 +217,36 @@
  					  civility: {civilityId : $("#person-civility").val()},
  					  name: $("#person-firstname").val()+ " "+ $("#person-lastname").val(), 
  					  _function: $("#person-function").val(),
+ 					  avatar : $("#person-avatar").val(),
  					  manager: {actorId : $("#person-manager").val()}, 
+ 					  company: {actorId : $("#person-company").val()},
+ 					  department: {departmentId : $("#person-department").val()},
  					  appreciation: {appreciationId : $("#actor-appreciation").val()}
  				}; 
     	}else{ // Company case
     		actor = { actorType:{actorTypeId:actorType}, 
     				  actorRole: {roleId: $("#actor-role").val()},
 					  name:$("#company-name").val(),
-					  sirennumber:$("#company-sirennumber").val(), 
+					  sirenNumber:$("#company-sirennumber").val(), 
+					  logo:$("#company-logo").val(), 
 					  appreciation: {appreciationId : $("#actor-appreciation").val()}
     				};
     	}
-   		console.log(actor); 		
       	$.ajax({
       			url:' ${pageContext.request.contextPath}/rfp/'+rfpId+"/newActor",    			
     			data: JSON.stringify(actor),
     			type :"POST",
     			contentType: "application/json",
     			success: function(response){
-    				alert("Reponse ajax");
 	    			var r = JSON.parse(response);
-	    			console.log("Im here"+response);    	
-	    		 	console.log(r);
 	    	    	data.id =r["id"];
 	    			data.label = r["name"];
 	    			data.color = r["noteteamtrade"];
 	    			data.shape = r["type"];
 	    			data.title  = r["title"];		
-      				console.log(data);
+      				$('#actorModal').modal('hide');
       		        callback(data);
+      		     	 
 	      		}
       		});
       }
@@ -329,12 +390,12 @@
     </script>
 
 </head>
-<body onload="draw();">
+<body onload="drawRFP();">
     <div id="wrapper">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-				<img src="http://teamtrade.synechron.com/images/logo.png"/>  <i class="fa fa-group fa-2x"></i> <strong style="font-family: 'Josefin Sans', sans-serif; font-size:20px;">RFP Strategy </strong>
+            <div class="navbar-header" style="padding:0.5em;">
+				<i class="fa fa-group fa-3x"></i> <strong style="font-family: 'Josefin Sans', sans-serif; font-size:20px;">RFP Strategy </strong>
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
@@ -407,10 +468,6 @@
 						<div class="modal fade" id="actorModal" tabindex="-1" role="dialog" aria-labelledby="actorModalLabel">
 						  <div class="modal-dialog" role="document">
 						    <div class="modal-content">
-						      <div class="modal-header">
-						        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						        <h4 class="modal-title" id="myModalLabel" id="operation">Add a new Actor</h4>
-						      </div>
 						      <div class="modal-body">
 						       <div class="panel panel-info">
 		                         <div class="panel-heading">
@@ -466,11 +523,43 @@
 														 <div class="input-group">
 															<select class="form-control" id="person-manager" name="InputPersonManager" required>
 															    <c:forEach items="${persons}" var="person">
-															  	  <option value="${person.actorId}">${person.firstname} ${person.lastname}</option> 
+															  	  <option value="${person.actorId}">${person.civility.name} ${person.name}</option> 
 															    </c:forEach>
 															</select>
 									                      	<span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
 									                      </div>
+									                </div>
+									                 <div class="form-group">
+									                	<i class="fa fa-chevron-circle-right"></i>
+									                    <label for="InputPersonCompany">Company</label>
+														 <div class="input-group">
+															<select class="form-control" id="person-company" name="InputPersonCompany" required>
+															    <c:forEach items="${companies}" var="company">
+															  	  <option value="${company.actorId}">${company.name}</option> 
+															    </c:forEach>
+															</select>
+									                      	<span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+									                      </div>
+									                </div>
+									                 <div class="form-group">
+									                	<i class="fa fa-chevron-circle-right"></i>
+									                    <label for="InputPersonDepartment">Department</label>
+														 <div class="input-group">
+															<select class="form-control" id="person-department" name="InputPersonDepartment" required>
+															    <c:forEach items="${departments}" var="department">
+															  	  <option value="${department.departmentId}">${department.name}</option> 
+															    </c:forEach>
+															</select>
+									                      	<span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+									                      </div>
+									                </div>
+									                <div class="form-group">
+									               		 <i class="fa fa-chevron-circle-right"></i>
+									                    <label for="InputPersonAvatar">Avatar</label>
+									                    <div class="input-group">
+									                        <input type="text" class="form-control" id="person-avatar" name="InputPersonAvatar" placeholder="Enter an avatar" required>
+									                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+									                    </div>
 									                </div>
 												</div>
 											<!-- Company tab -->
@@ -489,6 +578,14 @@
 									                    <label for="InputSirenNumber">Siren Number</label>
 									                    <div class="input-group">
 									                        <input type="text" class="form-control" name="InputSirenNumber" id="company-sirennumber" placeholder="Enter the Siren Number" required>
+									                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+									                    </div>
+									                </div>
+									                 <div class="form-group">
+									                	<i class="fa fa-chevron-circle-right"></i>
+									                    <label for="InputLogo">Logo</label>
+									                    <div class="input-group">
+									                        <input type="text" class="form-control" name="InputLogo" id="company-logo" placeholder="Enter the logo" required>
 									                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
 									                    </div>
 									                </div>

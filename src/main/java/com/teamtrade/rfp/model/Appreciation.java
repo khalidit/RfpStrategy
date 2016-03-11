@@ -1,15 +1,12 @@
 package com.teamtrade.rfp.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
-import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -30,7 +27,7 @@ public class Appreciation implements java.io.Serializable {
 	private Integer appreciationId;
 	private String name;
 	private Integer rating;
-	private Set<Actor> actors = new HashSet<Actor>(0); // the set of actors concerned by this appreciation
+//	private Set<Actor> actors = new HashSet<Actor>(0); // the set of actors concerned by this appreciation
 
 	public Appreciation() {
 	}
@@ -39,15 +36,13 @@ public class Appreciation implements java.io.Serializable {
 		this.name = name;
 	}
 
-	public Appreciation(String name, Integer rating, Set<Actor> actors) {
+	public Appreciation(String name, Integer rating) {
 		this.name = name;
 		this.rating = rating;
-		this.actors = actors;
 	}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-
 	@Column(name = "appreciation_id", unique = true, nullable = false)
 	public Integer getAppreciationId() {
 		return this.appreciationId;
@@ -75,13 +70,18 @@ public class Appreciation implements java.io.Serializable {
 		this.rating = rating;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appreciation")
-	public Set<Actor> getActors() {
-		return this.actors;
-	}
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appreciation")
+//	public Set<Actor> getActors() {
+//		return this.actors;
+//	}
+//
+//	public void setActors(Set<Actor> actors) {
+//		this.actors = actors;
+//	}
 
-	public void setActors(Set<Actor> actors) {
-		this.actors = actors;
+	@Override
+	public String toString() {
+		return "Appreciation [appreciationId=" + appreciationId + ", name=" + name + ", rating=" + rating + "]";
 	}
 
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.teamtrade.rfp.dao.RfpDao;
+import com.teamtrade.rfp.model.Actor;
+import com.teamtrade.rfp.model.ActorRole;
 import com.teamtrade.rfp.model.Rfp;
 
 /**
@@ -33,9 +35,8 @@ public class RfpServiceImpl implements RfpService {
 	}
 	
 	@Override
-	public void saveRfp(Rfp r) {
-		dao.saveRfp(r);
-		
+	public void addActorToRfp(Rfp r, Actor actor, ActorRole actorRole) {
+		dao.addActorToRfp(r, actor, actorRole);
 	}
 
 	@Override

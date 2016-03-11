@@ -9,9 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.teamtrade.rfp.model.Appreciation;
 import com.teamtrade.rfp.model.Client;
-import com.teamtrade.rfp.model.Company;
 import com.teamtrade.rfp.service.ClientService;
 import com.teamtrade.rfp.service.RfpService;
 
@@ -50,12 +48,10 @@ public class ClientController {
         model.addAttribute("IDICATOR_2_NAME", IDICATOR_2);
         model.addAttribute("IDICATOR_3_NAME", IDICATOR_3);
         model.addAttribute("IDICATOR_4_NAME", IDICATOR_4);
-        model.addAttribute("IDICATOR_1_VALUE", indicators.get(IDICATOR_1));
-        model.addAttribute("IDICATOR_2_VALUE", indicators.get(IDICATOR_2));
-        model.addAttribute("IDICATOR_3_VALUE", indicators.get(IDICATOR_3));
-        model.addAttribute("IDICATOR_4_VALUE", indicators.get(IDICATOR_3));
-        
-        
+        model.addAttribute("IDICATOR_1_VALUE", indicators.get(IDICATOR_1) != null ? indicators.get(IDICATOR_1) : 0);
+        model.addAttribute("IDICATOR_2_VALUE", indicators.get(IDICATOR_2) != null ? indicators.get(IDICATOR_2) : 0);
+        model.addAttribute("IDICATOR_3_VALUE", indicators.get(IDICATOR_3) != null ? indicators.get(IDICATOR_3) : 0);
+        model.addAttribute("IDICATOR_4_VALUE", indicators.get(IDICATOR_4) != null ? indicators.get(IDICATOR_4) : 0);
         return VIEW_LIST;
     }
  

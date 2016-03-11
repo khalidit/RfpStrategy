@@ -8,7 +8,7 @@ public interface ActorDao {
 		
 	Actor findById(int id);
 	  
-	int saveActor(Actor person);
+	Object[] saveActor(Actor person);
 	     
 	void deleteActorById(int id);
 	     

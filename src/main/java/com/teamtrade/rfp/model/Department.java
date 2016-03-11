@@ -1,13 +1,15 @@
 package com.teamtrade.rfp.model;
 
+import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
-import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,7 +32,7 @@ public class Department implements java.io.Serializable {
 	private Integer departmentId;
 	private Company company;
 	private String name;
-	private Set<Person> persons = new HashSet<Person>(0);
+//	private Set<Person> persons = new HashSet<Person>(0);
 
 	public Department() {
 	}
@@ -43,12 +45,11 @@ public class Department implements java.io.Serializable {
 	public Department(Company company, String name, Set<Person> persons) {
 		this.company = company;
 		this.name = name;
-		this.persons = persons;
+//		this.persons = persons;
 	}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-
 	@Column(name = "department_id", unique = true, nullable = false)
 	public Integer getDepartmentId() {
 		return this.departmentId;
@@ -77,13 +78,13 @@ public class Department implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
-	public Set<Person> getPersons() {
-		return this.persons;
-	}
+//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "department")
+//	public Set<Person> getPersons() {
+//		return this.persons;
+//	}
 
-	public void setPersons(Set<Person> persons) {
-		this.persons = persons;
-	}
+//	public void setPersons(Set<Person> persons) {
+//		this.persons = persons;
+//	}
 
 }

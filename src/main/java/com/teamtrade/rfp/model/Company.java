@@ -1,13 +1,11 @@
 package com.teamtrade.rfp.model;
 
 import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
-import static com.teamtrade.rfp.constants.Constants.DISCRIMINATOR_COMPAGNY;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -22,7 +20,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Company", catalog = DEFAULT_CATALOG)
 @PrimaryKeyJoinColumn(name = "id")
-@DiscriminatorValue(value=DISCRIMINATOR_COMPAGNY)
 public class Company extends Actor implements java.io.Serializable, Comparable<Company> {
 
 	/**
@@ -36,20 +33,16 @@ public class Company extends Actor implements java.io.Serializable, Comparable<C
 	@Column(name = "logo", length = 200)
 	private String logo;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "company")
 	private Set<Department> departments = new HashSet<Department>(0);
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-	private Set<Client> clients = new HashSet<Client>(0);
 
 	public Company() {
 	}
 
-	public Company(String sirenNumber, String logo, Set<Department> departments, Set<Client> clients) {
+	public Company(String sirenNumber, String logo, Set<Department> departments) {
 		this.sirenNumber = sirenNumber;
 		this.logo = logo;
 		this.departments = departments;
-		this.clients = clients;
 	}
 
 	public String getSirenNumber() {
@@ -76,16 +69,23 @@ public class Company extends Actor implements java.io.Serializable, Comparable<C
 		this.departments = departments;
 	}
 
-	public Set<Client> getClients() {
-		return this.clients;
-	}
-
-	public void setClients(Set<Client> clients) {
-		this.clients = clients;
-	}
+//	public Set<Client> getClients() {
+//		return this.clients;
+//	}
+//
+//	public void setClients(Set<Client> clients) {
+//		this.clients = clients;
+//	}
 	
 	@Override
 	public int compareTo(Company c) {
 		return this.getName().compareTo(c.getName());
+	}
+
+	@Override
+	public String toString() {
+		return "Company [sirenNumber=" + sirenNumber + ", logo=" + logo
+				+ ", getActorId()=" + getActorId() + ", getName()=" + getName() + ", getAppreciation()="
+				+ getAppreciation() + ", getActorType()=" + getActorType() + "]";
 	}
 }

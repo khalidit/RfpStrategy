@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.teamtrade.rfp.enums.ActorTypeEnum;
 import com.teamtrade.rfp.model.Actor;
 import com.teamtrade.rfp.model.ActorData;
-import com.teamtrade.rfp.model.Person;
 import com.teamtrade.rfp.model.Relation;
 import com.teamtrade.rfp.model.Rfp;
 import com.teamtrade.rfp.service.ActorService;
@@ -28,7 +27,7 @@ import com.teamtrade.rfp.service.RfpService;
 @Controller
 @RequestMapping("/rfp")
 public class RfpController {
-
+	
     @Autowired
     RfpService rfpService;
     
@@ -44,15 +43,16 @@ public class RfpController {
     private static final Gson gson = new Gson();
     
  
-    @RequestMapping( value = {"/{id}"}, method = RequestMethod.GET)     
+    @RequestMapping( value = {"/{id}"}, method = RequestMethod.GET) 
     public String get(@PathVariable String id, ModelMap model) {
     	Rfp rfp = rfpService.findById(Integer.parseInt(id));
     	Set<Actor> actors = rfp.getActors();
     	Set<Relation> relations = rfp.getRelations();
     	model.addAttribute("actors", gson.toJson(actors));
+    	System.out.println(gson.toJson(actors));
     	model.addAttribute("relations", gson.toJson(relations));
     	model.addAttribute("rfpId", id);
-    	model.addAttribute("clientName", rfp.getClient().getCompany().getName());
+    	model.addAttribute("clientName", rfp.getClient().getCompany());
     	model.addAttribute("rfpName", rfp.getName());
     	model.addAttribute("actorTypes", actorService.getAllActorTypes());
     	model.addAttribute("actorRoles", actorService.getAllActorRoles());
@@ -61,6 +61,8 @@ public class RfpController {
     	model.addAttribute("relationQualities", relationService.getAllRelationQualities());
     	model.addAttribute("civilities", actorService.getCivilities());
     	model.addAttribute("persons", actorService.getAllPersons());
+    	model.addAttribute("companies", actorService.getAllCompanies());
+    	model.addAttribute("departments", actorService.getAllDepartments());
     	return VIEW_GRAPH;
     }
     
@@ -73,19 +75,17 @@ public class RfpController {
     	ActorTypeEnum type = actorData.getActorType().getActorTypeId() == PERSON.id ? PERSON: COMPANY;
     	
     	Actor actor = (Actor) gson.fromJson(data, type.model);
-    	
     	Integer actorId = actorService.saveActor(actor);  
-    	if(actorId != null){
+    	if(actorId != null && actorId != -1){
+    		System.out.println("New actor added successfly");
     		actor.setActorId(actorId);
     		Rfp rfp = rfpService.findById(Integer.parseInt(rfpId));
     		if(rfp != null){
-    			rfp.getActors().add(actor);
-            	rfpService.saveRfp(rfp);
+            	rfpService.addActorToRfp(rfp, actor, actorData.getActorRole());
     		}
     	}else{
-    		System.out.println("save actor failed");
-    	}
-    	    	
+    		System.out.println("save actor failed or already exists");
+    	} 
     	return  gson.toJson(actor);
     }
 //    

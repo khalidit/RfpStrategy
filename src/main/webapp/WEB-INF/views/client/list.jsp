@@ -28,14 +28,13 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
 </head>
 <body>
     <div id="wrapper">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-				<img src="http://teamtrade.synechron.com/images/logo.png"/>  <i class="fa fa-group fa-2x"></i> <strong style="font-family: 'Josefin Sans', sans-serif; font-size:20px;">RFP Strategy </strong>
+            <div class="navbar-header"  style="padding:0.5em;">
+				<i class="fa fa-group fa-3x"></i> <strong style="font-family: 'Josefin Sans', sans-serif; font-size:20px;">RFP Strategy </strong>
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
@@ -104,8 +103,8 @@
                                     <i class="fa fa-gears fa-3x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">${IDICATOR_1_VALUE}</div>
-                                    <div>RFPs ${IDICATOR_1_NAME}!</div>
+                                    <div><span class="huge">${IDICATOR_1_VALUE}</span> RFPs</div>
+                                    <div>${IDICATOR_1_NAME}!</div>
                                 </div>
                             </div>
                         </div>
@@ -119,8 +118,8 @@
                                     <i class="fa fa-hand-o-right fa-3x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">${IDICATOR_2_VALUE}</div>
-                                    <div>RFPs ${IDICATOR_2_NAME}!</div>
+                                    <div><span class="huge">${IDICATOR_2_VALUE}</span> RFPs</div>
+                                    <div>${IDICATOR_2_NAME}!</div>
                                 </div>
                             </div>
                         </div>
@@ -134,8 +133,8 @@
                                     <i class="fa fa-thumbs-o-up fa-3x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">${IDICATOR_3_VALUE}</div>
-                                    <div>RFPs ${IDICATOR_3_NAME}!</div>
+                                    <div><span class="huge">${IDICATOR_3_VALUE}</span> RFPs</div>
+                                    <div>${IDICATOR_3_NAME}!</div>
                                 </div>
                             </div>
                         </div>
@@ -149,8 +148,8 @@
                                     <i class="fa  fa-thumbs-o-down fa-3x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">${IDICATOR_4_VALUE}</div>
-                                    <div>RFPs ${IDICATOR_4_NAME}!</div>
+                                    <div><span class="huge">${IDICATOR_4_VALUE}</span> RFPs</div>
+                                    <div>${IDICATOR_4_NAME}!</div>
                                 </div>
                             </div>
                         </div>
@@ -184,8 +183,10 @@
 										<div class="panel-heading">
 											<h4 class="panel-title">
 												<h4 data-toggle="collapse" data-parent="#accordion" href="#collapse${client.clientId}" style="cursor: pointer;">
-													<i class="fa fa-angle-right fa-fw"></i> ${client.company.name} <span class="caret"></span>
-													<span class="pull-right btn btn-info btn-circle"><strong style="font-size:8px;">${client.rfps.size()} RFP</strong></span>
+													<i class="fa fa-angle-right fa-fw"></i> ${client.company} <span class="caret"></span>
+													<span class="pull-right btn btn-info btn-circle">
+														<strong style="font-size:8px;">${client.rfps.size()} RFP</strong>
+													</span>
 													<div class="pull-right" style="margin-right:1em;">
 														<div class="btn-group">
 															<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -204,10 +205,9 @@
 											<div class="panel-body">
 												<div class="list-group">
 												<c:forEach items="${client.rfps}" var="rfp">
-													<a href="rfp/${rfp.rfpId}" class="list-group-item">
-														<i class="fa fa-angle-right fa-fw"></i> ${rfp.name}
-														<span class="pull-right text-muted small">${rfp.rfpStatus.name}
-														</span>
+													<a href="rfp/${rfp.rfpId}" class="list-group-item panel-info">
+														<i class="fa fa-check-square fa-fw"></i> ${rfp.name}
+														<span class="pull-right text-muted small">${rfp.rfpStatus.name} :: <i class="fa fa-group fa-fw" style="color:green;"></i> <span style="color:green;"> ${rfp.actors.size()} actors</span> </span>
 													</a>
 												</c:forEach>
 												</div>
