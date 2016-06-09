@@ -11,7 +11,7 @@ import com.teamtrade.rfp.model.RfpActors;
 
 public interface RfpDao {	
 	Rfp findRfpById(int id);
-	List<Rfp> findAllRfp();
+	Set<Rfp> findAllRfp();
 	void updateRfp(Rfp r);
 	void deleteRfpById(int id);
 	Actor findRfpActorById(int rfpId, int actorId);

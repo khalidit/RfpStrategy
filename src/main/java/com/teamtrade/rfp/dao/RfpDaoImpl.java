@@ -25,10 +25,10 @@ public class RfpDaoImpl extends AbstractDao<Integer, Rfp> implements RfpDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Rfp> findAllRfp() {
+	public Set<Rfp> findAllRfp() {
 		Criteria criteria = createEntityCriteria();
 		criteria.addOrder(Order.asc("name"));
-		return (List<Rfp>) criteria.list();
+		return new HashSet((List<Rfp>) criteria.list());
 	}
 	
 	@Override

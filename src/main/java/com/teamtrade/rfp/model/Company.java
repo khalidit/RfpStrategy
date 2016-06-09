@@ -33,16 +33,16 @@ public class Company extends Actor implements java.io.Serializable, Comparable<C
 	@Column(name = "logo", length = 200)
 	private String logo;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "company")
-	private Set<Department> departments = new HashSet<Department>(0);
+//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "company")
+//	private Set<Department> departments = new HashSet<Department>(0);
 
 	public Company() {
 	}
 
-	public Company(String sirenNumber, String logo, Set<Department> departments) {
+	public Company(String sirenNumber, String logo/*, Set<Department> departments*/) {
 		this.sirenNumber = sirenNumber;
 		this.logo = logo;
-		this.departments = departments;
+		//this.departments = departments;
 	}
 
 	public String getSirenNumber() {
@@ -61,31 +61,27 @@ public class Company extends Actor implements java.io.Serializable, Comparable<C
 		this.logo = logo;
 	}
 
-	public Set<Department> getDepartments() {
-		return this.departments;
-	}
-
-	public void setDepartments(Set<Department> departments) {
-		this.departments = departments;
-	}
-
-//	public Set<Client> getClients() {
-//		return this.clients;
+//	public Set<Department> getDepartments() {
+//		return this.departments;
 //	}
 //
-//	public void setClients(Set<Client> clients) {
-//		this.clients = clients;
+//	public void setDepartments(Set<Department> departments) {
+//		this.departments = departments;
 //	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
+	private Set<Client> clients = new HashSet<Client>(0);
+	
+	public Set<Client> getClients() {
+		return this.clients;
+	}
+
+	public void setClients(Set<Client> clients) {
+		this.clients = clients;
+	}
 	
 	@Override
 	public int compareTo(Company c) {
 		return this.getName().compareTo(c.getName());
-	}
-
-	@Override
-	public String toString() {
-		return "Company [sirenNumber=" + sirenNumber + ", logo=" + logo
-				+ ", getActorId()=" + getActorId() + ", getName()=" + getName() + ", getAppreciation()="
-				+ getAppreciation() + ", getActorType()=" + getActorType() + "]";
 	}
 }

@@ -33,15 +33,11 @@ public class Person extends Actor implements java.io.Serializable {
 	private String _function;
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name = "company")
-	private Company company;
-	
-	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name = "department", nullable = false)
 	private Department department;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name = "manager")
+	@JoinColumn(name = "manager", nullable = false)
 	private Person manager;
 	
 	@Column(name = "avatar", length = 200)
@@ -50,19 +46,17 @@ public class Person extends Actor implements java.io.Serializable {
 	public Person() {
 	}
 
-	public Person(Civility civility, String function, Company company, Department department, Person person) {
+	public Person(Civility civility, String function, Department department, Person manager) {
 		this.civility = civility;
 		this.department = department;
-		this.manager = person;
+		this.manager = manager;
 		this._function = function;
-		this.company = company;
 	}
 
-	public Person(Civility civility, String function, Company company, Department department, Person manager, String avatar) {
-		this(civility, function, company, department, manager);
+	public Person(Civility civility, String function, Department department, Person manager, String avatar) {
+		this(civility, function, department, manager);
 		this.avatar = avatar;
 	}
-
 
 	public Civility getCivility() {
 		return this.civility;
@@ -72,14 +66,6 @@ public class Person extends Actor implements java.io.Serializable {
 		this.civility = civility;
 	}
 
-	public Company getCompany() {
-		return this.company;
-	}
-
-	public void setCompany(Company company) {
-		this.company = company;
-	}
-	
 	public Department getDepartment() {
 		return this.department;
 	}
@@ -92,8 +78,8 @@ public class Person extends Actor implements java.io.Serializable {
 		return this.manager;
 	}
 
-	public void setManager(Person person) {
-		this.manager = person;
+	public void setManager(Person manager) {
+		this.manager = manager;
 	}
 
 	public String getFunction() {

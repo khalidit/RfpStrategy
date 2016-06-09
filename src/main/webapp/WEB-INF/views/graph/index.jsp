@@ -92,8 +92,8 @@
     			title += '           		 <ul class="fa-ul">';
     			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Appreciation : '+node['appreciation']['name']+'</li>';
     			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Function : '+node['_function']+'</li>';
-    			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Company : '+node['company']['name']+'</li>';
-    			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Department : '+node['department']['name']+'</li>';
+//     			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Company : '+node['company']['name']+'</li>';
+//     			title += '      			  <li><i class="fa-li fa fa-check-square"></i>Department : '+node['department']['name']+'</li>';
     			title += '      			</ul>';
     			title += '             </div>';
     			title += '        </div>';

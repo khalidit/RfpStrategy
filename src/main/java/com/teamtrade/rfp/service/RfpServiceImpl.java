@@ -1,8 +1,8 @@
 package com.teamtrade.rfp.service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class RfpServiceImpl implements RfpService {
 	}
 
 	@Override
-	public List<Rfp> findAllRfp() {
+	public Set<Rfp> findAllRfp() {
 		return dao.findAllRfp();
 	}
 	
@@ -51,7 +51,7 @@ public class RfpServiceImpl implements RfpService {
 	
 	public Map<String, Integer> getIndicators(){
 		Map<String, Integer> indicators = new HashMap<>();
-		List<Rfp> rfps = findAllRfp();
+		Set<Rfp> rfps = findAllRfp();
 		
 		for(Rfp rfp : rfps){
 			String status = rfp.getRfpStatus().getName();

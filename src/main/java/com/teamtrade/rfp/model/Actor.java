@@ -2,9 +2,6 @@ package com.teamtrade.rfp.model;
 
 import static com.teamtrade.rfp.constants.Constants.DEFAULT_CATALOG;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -27,7 +23,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Actor", catalog = DEFAULT_CATALOG)
 @Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name="actor_type", discriminatorType=DiscriminatorType.INTEGER)
 public class Actor implements java.io.Serializable {
 	/**
 	 * 
@@ -49,9 +44,6 @@ public class Actor implements java.io.Serializable {
 	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name = "actor_type", nullable = false)
 	private ActorType actorType;
-	
-//	@ManyToMany(fetch=FetchType.EAGER, mappedBy="actors")
-//	private Set<Rfp> rfps = new HashSet<Rfp>(0);
 	
 	public Actor() {}
 
@@ -91,13 +83,6 @@ public class Actor implements java.io.Serializable {
 		this.actorType = actorType;
 	}
 
-//	public Set<Rfp> getRfps() {
-//		return rfps;
-//	}
-//
-//	public void setRfps(Set<Rfp> rfps) {
-//		this.rfps = rfps;
-//	}
 
 	@Override
 	public String toString() {

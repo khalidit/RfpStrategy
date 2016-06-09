@@ -32,9 +32,6 @@ public class Civility implements java.io.Serializable {
 	
 	@Column(name = "name", unique = true, nullable = false, length = 12)
 	private String name;
-	
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "civility")
-//	private Set<Person> persons = new HashSet<Person>(0);
 
 	public Civility() {
 	}
@@ -42,11 +39,6 @@ public class Civility implements java.io.Serializable {
 	public Civility(String name) {
 		this.name = name;
 	}
-
-//	public Civility(String name, Set<Person> persons) {
-//		this.name = name;
-//		this.persons = persons;
-//	}
 
 	public Integer getCivilityId() {
 		return this.civilityId;
@@ -63,13 +55,4 @@ public class Civility implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-//	public Set<Person> getPersons() {
-//		return this.persons;
-//	}
-//
-//	public void setPersons(Set<Person> persons) {
-//		this.persons = persons;
-//	}
-
 }

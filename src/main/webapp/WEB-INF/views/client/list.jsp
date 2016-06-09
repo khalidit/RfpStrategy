@@ -183,7 +183,7 @@
 										<div class="panel-heading">
 											<h4 class="panel-title">
 												<h4 data-toggle="collapse" data-parent="#accordion" href="#collapse${client.clientId}" style="cursor: pointer;">
-													<i class="fa fa-angle-right fa-fw"></i> ${client.company} <span class="caret"></span>
+													<i class="fa fa-angle-right fa-fw"></i> ${client.company.name} <span class="caret"></span>
 													<span class="pull-right btn btn-info btn-circle">
 														<strong style="font-size:8px;">${client.rfps.size()} RFP</strong>
 													</span>

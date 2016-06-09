@@ -3,6 +3,7 @@ package com.teamtrade.rfp.controller;
 import static com.teamtrade.rfp.enums.ActorTypeEnum.COMPANY;
 import static com.teamtrade.rfp.enums.ActorTypeEnum.PERSON;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.teamtrade.rfp.enums.ActorTypeEnum;
 import com.teamtrade.rfp.model.Actor;
 import com.teamtrade.rfp.model.ActorData;
+import com.teamtrade.rfp.model.Company;
+import com.teamtrade.rfp.model.Person;
 import com.teamtrade.rfp.model.Relation;
 import com.teamtrade.rfp.model.Rfp;
 import com.teamtrade.rfp.service.ActorService;
@@ -40,7 +46,19 @@ public class RfpController {
     
     private static final String VIEW_GRAPH = "graph/index"; 
     
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
+		
+		@Override
+		public boolean shouldSkipField(FieldAttributes f) {
+			if(f.getDeclaringClass().equals(Company.class) && f.getName().equals("clients")) return true;
+			return false;
+		}
+		
+		@Override
+		public boolean shouldSkipClass(Class<?> clazz) {
+			return false;
+		}
+	}).create();
     
  
     @RequestMapping( value = {"/{id}"}, method = RequestMethod.GET) 
@@ -48,11 +66,11 @@ public class RfpController {
     	Rfp rfp = rfpService.findById(Integer.parseInt(id));
     	Set<Actor> actors = rfp.getActors();
     	Set<Relation> relations = rfp.getRelations();
+    	
     	model.addAttribute("actors", gson.toJson(actors));
-    	System.out.println(gson.toJson(actors));
     	model.addAttribute("relations", gson.toJson(relations));
     	model.addAttribute("rfpId", id);
-    	model.addAttribute("clientName", rfp.getClient().getCompany());
+    	model.addAttribute("clientName", rfp.getClient().getCompany().getName());
     	model.addAttribute("rfpName", rfp.getName());
     	model.addAttribute("actorTypes", actorService.getAllActorTypes());
     	model.addAttribute("actorRoles", actorService.getAllActorRoles());

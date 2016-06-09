@@ -26,14 +26,14 @@ public class PersonDaoImpl extends AbstractDao<Integer, Person> implements Perso
 
 	@Override
 	public void save(Long actorId, Person person) {
-		SQLQuery query = getSession().createSQLQuery("INSERT INTO Person (`id`, `civility`, `_function`, `department`, `manager`, `avatar`, `company`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		SQLQuery query = getSession().createSQLQuery("INSERT INTO Person (`id`, `civility`, `_function`, `department`, `manager`, `avatar`) VALUES (?, ?, ?, ?, ?, ?)");
 		query.setParameter(0, actorId);
 		query.setParameter(1, person.getCivility().getCivilityId());
 		query.setParameter(2, person.getFunction());
 		query.setParameter(3, person.getDepartment().getDepartmentId());
 		query.setParameter(4, person.getManager().getActorId());
 		query.setParameter(5, person.getAvatar());
-		query.setParameter(6, person.getCompany().getActorId());
+		//query.setParameter(6, person.getCompany().getActorId());
 		query.executeUpdate();		
 	}
 
